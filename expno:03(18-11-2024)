@@ -1,0 +1,74 @@
+AIM: 
+The aim of the given code is to solve the Water Jug Problem, a well-known problem in artificial intelligence and mathematics. 
+The objective is to determine whether it is possible to measure an exact amount of water (the target) using two jugs of fixed capacities (a and b). 
+If a solution exists, the program provides a path of operations leading to the solution.
+Steps in the Algorithm:
+Initialization:
+Use a queue (q) to store states of the jugs. A state is represented as a tuple (x, y) where x is the amount of water in Jug1 and y is the amount in Jug2.
+Use a dictionary (m) to track visited states and avoid revisiting them.
+Start State:
+Begin with both jugs empty: (0, 0).
+BFS Exploration:
+While the queue is not empty:
+Dequeue the current state (u[0], u[1]).
+Check if this state is out of bounds or already visited. If yes, skip it.
+Mark the state as visited.
+Add this state to the solution path.
+Check if the current state meets the target condition:
+If u[0] == target or u[1] == target, the solution is found.
+If a solution is found, output the path and stop further exploration.
+Generate Next States: For each state (u[0], u[1]), generate the following possible next states.
+End Condition:
+If the queue is exhausted without finding the target, output "Solution not possible.
+Code:
+from collections import deque
+def Solution(a, b, target):
+	m = {}
+	isSolvable = False
+	path = []
+	q = deque()
+	#Initializing with jugs being empty
+	q.append((0, 0))
+	while (len(q) > 0):
+		# Current state
+		u = q.popleft()
+		if ((u[0], u[1]) in m):
+			continue
+		if ((u[0] > a or u[1] > b or
+			u[0] < 0 or u[1] < 0)):
+			continue
+		path.append([u[0], u[1]])
+		m[(u[0], u[1])] = 1
+		if (u[0] == target or u[1] == target):
+			isSolvable = True
+			if (u[0] == target):
+				if (u[1] != 0):
+					path.append([u[0], 0])
+			else:
+				if (u[0] != 0):
+					path.append([0, u[1]])
+			sz = len(path)
+			for i in range(sz):
+				print("(", path[i][0], ",",
+					path[i][1], ")")
+			break
+		q.append([u[0], b]) # Fill Jug2
+		q.append([a, u[1]]) # Fill Jug1
+		for ap in range(max(a, b) + 1):
+			c = u[0] + ap
+			d = u[1] - ap
+			if (c == a or (d == 0 and d >= 0)):
+				q.append([c, d])
+			c = u[0] - ap
+			d = u[1] + ap
+			if ((c == 0 and c >= 0) or d == b):
+				q.append([c, d])
+		q.append([a, 0])
+		q.append([0, b])
+	if (not isSolvable):
+		print("Solution not possible")
+if __name__ == '__main__':
+	Jug1, Jug2, target = 4, 3, 2
+	print("Path from initial state "
+		"to solution state ::")
+	Solution(Jug1, Jug2, target)
